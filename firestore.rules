@@ -1,0 +1,63 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Default deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Helper functions
+    function isSignedIn() {
+      return request.auth != null;
+    }
+    
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    // User Profiles
+    match /users/{userId} {
+      allow read: if isOwner(userId);
+      allow create: if isOwner(userId) && 
+        incoming().keys().hasAll(['uid', 'email', 'displayName', 'photoURL', 'lastLogin']) &&
+        incoming().keys().size() == 5 &&
+        incoming().uid == userId &&
+        incoming().email is string &&
+        incoming().displayName is string &&
+        incoming().lastLogin == request.time;
+      allow update: if isOwner(userId) &&
+        incoming().lastLogin == request.time &&
+        incoming().diff(existing()).affectedKeys().hasOnly(['lastLogin', 'displayName', 'photoURL']);
+    }
+
+    // Watchlist
+    match /users/{userId}/watchlist/{movieId} {
+      allow read: if isOwner(userId);
+      allow create: if isOwner(userId) && 
+        isValidId(movieId) &&
+        incoming().movieId == movieId &&
+        incoming().addedAt == request.time;
+      allow delete: if isOwner(userId);
+    }
+
+    // Comments
+    match /comments/{commentId} {
+      allow read: if true; // Public can see comments
+      allow create: if isSignedIn() &&
+        incoming().userId == request.auth.uid &&
+        incoming().createdAt == request.time &&
+        incoming().text is string &&
+        incoming().text.size() <= 1000;
+      allow delete: if isSignedIn() && resource.data.userId == request.auth.uid;
+      // No updates for comments to maintain integrity, or restrict heavily
+    }
+  }
+}

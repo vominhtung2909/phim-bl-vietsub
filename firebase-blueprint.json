@@ -1,0 +1,54 @@
+{
+  "entities": {
+    "userProfile": {
+      "title": "User Profile",
+      "description": "Public and private user information",
+      "type": "object",
+      "properties": {
+        "email": { "type": "string", "format": "email" },
+        "displayName": { "type": "string" },
+        "photoURL": { "type": "string" },
+        "lastLogin": { "type": "string", "format": "date-time" }
+      },
+      "required": ["email"]
+    },
+    "watchlistItem": {
+      "title": "Watchlist Item",
+      "description": "Reference to a movie saved by a user",
+      "type": "object",
+      "properties": {
+        "movieId": { "type": "string" },
+        "addedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["movieId", "addedAt"]
+    },
+    "comment": {
+      "title": "Movie Comment",
+      "description": "User comments on movies",
+      "type": "object",
+      "properties": {
+        "movieId": { "type": "string" },
+        "userId": { "type": "string" },
+        "userName": { "type": "string" },
+        "userPhoto": { "type": "string" },
+        "text": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["movieId", "userId", "text", "createdAt"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "userProfile",
+      "description": "User profiles"
+    },
+    "/users/{userId}/watchlist/{movieId}": {
+      "schema": "watchlistItem",
+      "description": "User's saved movies"
+    },
+    "/comments/{commentId}": {
+      "schema": "comment",
+      "description": "Global comments collection (queried by movieId)"
+    }
+  }
+}
