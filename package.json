@@ -1,40 +1,50 @@
-{
-  "name": "react-example",
-  "private": true,
-  "version": "0.0.0",
-  "type": "module",
-  "scripts": {
-    "dev": "vite --port=3000 --host=0.0.0.0",
-    "build": "vite build",
-    "preview": "vite preview",
-    "clean": "rm -rf dist",
-    "lint": "tsc --noEmit"
-  },
-  "dependencies": {
-    "@google/genai": "^1.29.0",
-    "@tailwindcss/vite": "^4.1.14",
-    "@vitejs/plugin-react": "^5.0.4",
-    "clsx": "^2.1.1",
-    "dotenv": "^17.2.3",
-    "express": "^4.21.2",
-    "firebase": "^12.12.1",
-    "lucide-react": "^0.546.0",
-    "motion": "^12.23.24",
-    "papaparse": "^5.5.3",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0",
-    "react-helmet-async": "^3.0.0",
-    "react-router-dom": "^7.14.2",
-    "tailwind-merge": "^3.5.0",
-    "vite": "^6.2.0"
-  },
-  "devDependencies": {
-    "@types/express": "^4.17.21",
-    "@types/node": "^22.14.0",
-    "autoprefixer": "^10.4.21",
-    "tailwindcss": "^4.1.14",
-    "tsx": "^4.21.0",
-    "typescript": "~5.8.2",
-    "vite": "^6.2.0"
-  }
+/**
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+interface AnonymousIdentity {
+  id: string;
+  name: string;
+  avatar: string;
 }
+
+const ANIMALS = [
+  { name: "Mèo Lười Cần Thơ", avatar: "https://api.dicebear.com/7.x/bottts/svg?seed=cat&backgroundColor=b6e3f4" },
+  { name: "Sếu Hồng Đồng Tháp", avatar: "https://api.dicebear.com/7.x/bottts/svg?seed=bird&backgroundColor=ffdfbf" },
+  { name: "Gấu Trúc Trực Đêm", avatar: "https://api.dicebear.com/7.x/bottts/svg?seed=panda&backgroundColor=c0aede" },
+  { name: "Cánh Cụt Y Khoa", avatar: "https://api.dicebear.com/7.x/bottts/svg?seed=penguin&backgroundColor=d1d4f9" },
+  { name: "Thỏ Bảy Màu", avatar: "https://api.dicebear.com/7.x/bottts/svg?seed=rabbit&backgroundColor=ffd5dc" },
+  { name: "Cáo Chín Đuôi", avatar: "https://api.dicebear.com/7.x/bottts/svg?seed=fox&backgroundColor=ffdfbf" },
+  { name: "Voi Con Bản Đôn", avatar: "https://api.dicebear.com/7.x/bottts/svg?seed=elephant&backgroundColor=b6e3f4" },
+  { name: "Hổ Hổ Sinh Hùng", avatar: "https://api.dicebear.com/7.x/bottts/svg?seed=tiger&backgroundColor=ffd5dc" },
+  { name: "Sóc Chuột Nhanh Nhảu", avatar: "https://api.dicebear.com/7.x/bottts/svg?seed=squirrel&backgroundColor=c0aede" },
+  { name: "Rồng Lộn Xộn", avatar: "https://api.dicebear.com/7.x/bottts/svg?seed=dragon&backgroundColor=d1d4f9" }
+];
+
+const STORAGE_KEY = 'anonymous_identity';
+
+export const identityService = {
+  getIdentity(): AnonymousIdentity {
+    const stored = localStorage.getItem(STORAGE_KEY);
+    if (stored) {
+      try {
+        return JSON.parse(stored);
+      } catch (e) {
+        console.error('Error parsing stored identity', e);
+      }
+    }
+
+    // Generate new identity
+    const id = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+    const animal = ANIMALS[Math.floor(Math.random() * ANIMALS.length)];
+    
+    const newIdentity: AnonymousIdentity = {
+      id,
+      name: animal.name,
+      avatar: animal.avatar
+    };
+
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(newIdentity));
+    return newIdentity;
+  }
+};

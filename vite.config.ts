@@ -1,36 +1,10 @@
-import tailwindcss from '@tailwindcss/vite';
-import react from '@vitejs/plugin-react';
-import path from 'path';
-import {defineConfig, loadEnv} from 'vite';
-
-export default defineConfig(({mode}) => {
-  const env = loadEnv(mode, '.', '');
-  return {
-    plugins: [react(), tailwindcss()],
-    define: {
-      'process.env.GEMINI_API_KEY': JSON.stringify(env.GEMINI_API_KEY),
-    },
-    build: {
-      target: 'esnext',
-      minify: 'esbuild',
-      cssMinify: true,
-      rollupOptions: {
-        output: {
-          manualChunks: {
-            'vendor': ['react', 'react-dom', 'react-router-dom', 'react-helmet-async'],
-          }
-        }
-      }
-    },
-    resolve: {
-      alias: {
-        '@': path.resolve(__dirname, '.'),
-      },
-    },
-    server: {
-      // HMR is disabled in AI Studio via DISABLE_HMR env var.
-      // Do not modifyâfile watching is disabled to prevent flickering during agent edits.
-      hmr: process.env.DISABLE_HMR !== 'true',
-    },
-  };
-});
+{
+  "projectId": "gen-lang-client-0646786815",
+  "appId": "1:900991205458:web:d316085660b3f5219b1f8b",
+  "apiKey": "AIzaSyAszjHF8leztiPpONCk_KGCD-R3NTOdprQ",
+  "authDomain": "gen-lang-client-0646786815.firebaseapp.com",
+  "firestoreDatabaseId": "ai-studio-bd0e3837-74e1-42a6-8d81-ecfdc704cd8d",
+  "storageBucket": "gen-lang-client-0646786815.firebasestorage.app",
+  "messagingSenderId": "900991205458",
+  "measurementId": ""
+}

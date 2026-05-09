@@ -1,10 +1,30 @@
-{
-  "projectId": "gen-lang-client-0646786815",
-  "appId": "1:900991205458:web:d316085660b3f5219b1f8b",
-  "apiKey": "AIzaSyAszjHF8leztiPpONCk_KGCD-R3NTOdprQ",
-  "authDomain": "gen-lang-client-0646786815.firebaseapp.com",
-  "firestoreDatabaseId": "ai-studio-bd0e3837-74e1-42a6-8d81-ecfdc704cd8d",
-  "storageBucket": "gen-lang-client-0646786815.firebasestorage.app",
-  "messagingSenderId": "900991205458",
-  "measurementId": ""
+/**
+ * @license
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+import { initializeApp } from 'firebase/app';
+import { getFirestore } from 'firebase/firestore';
+import firebaseConfig from '../../firebase-applet-config.json';
+
+const app = initializeApp(firebaseConfig);
+export const db = getFirestore(app, firebaseConfig.firestoreDatabaseId);
+
+export enum OperationType {
+  CREATE = 'create',
+  UPDATE = 'update',
+  DELETE = 'delete',
+  LIST = 'list',
+  GET = 'get',
+  WRITE = 'write',
+}
+
+export function handleFirestoreError(error: unknown, operationType: OperationType, path: string | null) {
+  const errInfo = {
+    error: error instanceof Error ? error.message : String(error),
+    operationType,
+    path
+  };
+  console.error('Firestore Error: ', JSON.stringify(errInfo));
+  throw new Error(JSON.stringify(errInfo));
 }

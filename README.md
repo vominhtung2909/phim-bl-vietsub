@@ -1,20 +1,33 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-</div>
+/**
+ * @license
+ * SPDX-License-Identifier: Apache-2.0
+ */
 
-# Run and deploy your AI Studio app
+import { clsx, type ClassValue } from 'clsx';
+import { twMerge } from 'tailwind-merge';
 
-This contains everything you need to run your app locally.
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs));
+}
 
-View your app in AI Studio: https://ai.studio/apps/bd0e3837-74e1-42a6-8d81-ecfdc704cd8d
-
-## Run Locally
-
-**Prerequisites:**  Node.js
-
-
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+export function slugify(text: string): string {
+  if (!text) return '';
+  
+  let slug = text.toLowerCase();
+  
+  // Remove Vietnamese accents
+  slug = slug.replace(/[àáạảãâầấậẩẫăằắặẳẵ]/g, 'a');
+  slug = slug.replace(/[èéẹẻẽêềếệểễ]/g, 'e');
+  slug = slug.replace(/[ìíịỉĩ]/g, 'i');
+  slug = slug.replace(/[òóọỏõôồốộổỗơờớợởỡ]/g, 'o');
+  slug = slug.replace(/[ùúụủũưừứựửữ]/g, 'u');
+  slug = slug.replace(/[ỳýỵỷỹ]/g, 'y');
+  slug = slug.replace(/đ/g, 'd');
+  
+  // Remove special characters and replace spaces with hyphens
+  slug = slug.replace(/[^a-z0-9\s-]/g, '');
+  slug = slug.replace(/[\s-]+/g, '-');
+  slug = slug.replace(/^-+|-+$/g, '');
+  
+  return slug;
+}
