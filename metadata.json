@@ -3,85 +3,31 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { Movie } from '../types';
+import { clsx, type ClassValue } from 'clsx';
+import { twMerge } from 'tailwind-merge';
 
-const WATCHLIST_STORAGE_KEY = 'phimbl_watchlist_data';
-
-interface WatchlistItem {
-  id: string;
-  title: string;
-  slug: string;
-  lastEpisodeCount: number;
-  statusLabel: string;
-  image: string;
-  updatedAt: number;
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs));
 }
 
-export const notificationService = {
-  getWatchlist(): WatchlistItem[] {
-    const data = localStorage.getItem(WATCHLIST_STORAGE_KEY);
-    return data ? JSON.parse(data) : [];
-  },
-
-  toggleWatchlist(movie: Movie) {
-    const items = this.getWatchlist();
-    const index = items.findIndex(item => item.id === movie.id);
-    
-    if (index > -1) {
-      items.splice(index, 1);
-    } else {
-      items.push({
-        id: movie.id,
-        title: movie.title,
-        slug: movie.slug,
-        lastEpisodeCount: movie.episodes.length,
-        statusLabel: movie.statusLabel || '',
-        image: movie.poster_url,
-        updatedAt: Date.now()
-      });
-    }
-    
-    localStorage.setItem(WATCHLIST_STORAGE_KEY, JSON.stringify(items));
-    return this.getWatchlist();
-  },
-
-  isInWatchlist(movieId: string): boolean {
-    const items = this.getWatchlist();
-    return items.some(item => item.id === movieId);
-  },
-
-  updateLastSeen(movie: Movie) {
-    const items = this.getWatchlist();
-    const index = items.findIndex(item => item.id === movie.id);
-    if (index > -1) {
-      items[index].lastEpisodeCount = movie.episodes.length;
-      items[index].statusLabel = movie.statusLabel;
-      items[index].updatedAt = Date.now();
-      localStorage.setItem(WATCHLIST_STORAGE_KEY, JSON.stringify(items));
-    }
-  },
-
-  checkUpdates(allMovies: Movie[]): WatchlistItem[] {
-    const watchlist = this.getWatchlist();
-    const updates: WatchlistItem[] = [];
-
-        watchlist.forEach(item => {
-      const currentMovie = allMovies.find(m => m.id === item.id);
-      if (currentMovie) {
-        // Simple comparison
-        const hasMoreEpisodes = currentMovie.episodes.length > item.lastEpisodeCount;
-        const isNowEnd = (currentMovie.statusLabel || '').toUpperCase() === 'END' && (item.statusLabel || '').toUpperCase() !== 'END';
-        
-        if (hasMoreEpisodes || isNowEnd) {
-          updates.push({
-            ...item,
-            slug: currentMovie.slug,
-            statusLabel: currentMovie.statusLabel || ''
-          });
-        }
-      }
-    });
-
-    return updates;
-  }
-};
+export function slugify(text: string): string {
+  if (!text) return '';
+  
+  let slug = text.toLowerCase();
+  
+  // Remove Vietnamese accents
+  slug = slug.replace(/[àáạảãâầấậẩẫăằắặẳẵ]/g, 'a');
+  slug = slug.replace(/[èéẹẻẽêềếệểễ]/g, 'e');
+  slug = slug.replace(/[ìíịỉĩ]/g, 'i');
+  slug = slug.replace(/[òóọỏõôồốộổỗơờớợởỡ]/g, 'o');
+  slug = slug.replace(/[ùúụủũưừứựửữ]/g, 'u');
+  slug = slug.replace(/[ỳýỵỷỹ]/g, 'y');
+  slug = slug.replace(/đ/g, 'd');
+  
+  // Remove special characters and replace spaces with hyphens
+  slug = slug.replace(/[^a-z0-9\s-]/g, '');
+  slug = slug.replace(/[\s-]+/g, '-');
+  slug = slug.replace(/^-+|-+$/g, '');
+  
+  return slug;
+}
