@@ -1,0 +1,76 @@
+@import url('https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800;900&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Be Vietnam Pro", ui-sans-serif, system-ui, sans-serif;
+  
+  --color-brand-primary: #a855f7;
+  --color-brand-secondary: #6366f1;
+  
+  --color-bg-dark: #050505;
+  --color-glass-bg: rgba(255, 255, 255, 0.03);
+  --color-glass-border: rgba(255, 255, 255, 0.08);
+}
+
+@layer base {
+  body {
+    @apply bg-bg-dark text-white font-sans antialiased overflow-x-hidden;
+  }
+}
+
+@layer components {
+  .glass {
+    @apply bg-glass-bg backdrop-blur-xl border border-glass-border;
+  }
+  
+  .glass-card {
+    @apply bg-white/5 backdrop-blur-lg border border-white/10 shadow-2xl;
+  }
+  
+  .btn-accent {
+    @apply bg-brand-primary text-white px-6 py-2 rounded-full font-semibold shadow-lg shadow-purple-500/20 hover:scale-105 transition-transform active:scale-95;
+  }
+
+  .mesh-gradient-1 {
+    @apply absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-purple-900/20 rounded-full blur-[120px] pointer-events-none;
+  }
+
+  .mesh-gradient-2 {
+    @apply absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-blue-900/10 rounded-full blur-[120px] pointer-events-none;
+  }
+
+  .video-placeholder {
+    background: radial-gradient(circle at center, #1a1a1a 0%, #000000 100%);
+  }
+
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .custom-scrollbar-horizontal::-webkit-scrollbar {
+    height: 4px;
+  }
+  .custom-scrollbar-horizontal::-webkit-scrollbar-track {
+    background: #0f172a;
+    border-radius: 10px;
+  }
+  .custom-scrollbar-horizontal::-webkit-scrollbar-thumb {
+    background: #7c3aed;
+    border-radius: 10px;
+  }
+  .custom-scrollbar-horizontal::-webkit-scrollbar-thumb:hover {
+    background: #a855f7;
+  }
+  .movie-title {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    line-height: 1.4;
+    max-height: 2.8em;
+  }
+}
